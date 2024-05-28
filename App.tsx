@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -5,113 +7,222 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useEffect, useState} from 'react';
+
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native';
+import Button from './button';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import AudioRecorderPlayer, {
+  AVEncoderAudioQualityIOSType,
+  AVEncodingOption,
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+  OutputFormatAndroidType,
+} from 'react-native-audio-recorder-player';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import type {
+  AudioSet,
+  PlayBackType,
+  RecordBackType,
+} from 'react-native-audio-recorder-player';
+import AudioRecorder from './recorder-player';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+// const screenWidth = Dimensions.get('screen').width;
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [data, setData] = useState({
+    isLoggingIn: false,
+    recordSecs: 0,
+    recordTime: '00:00:00',
+    currentPositionSec: 0,
+    currentDurationSec: 0,
+    playTime: '00:00:00',
+    duration: '00:00:00',
+  });
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const audioRecorderPlayer = new AudioRecorderPlayer();
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  audioRecorderPlayer.setSubscriptionDuration(0.1); // optional. Default is 0.5
+
+  // return (
+  //   <SafeAreaView style={styles.container}>
+  //     <Text style={styles.titleTxt}>Audio Recorder Player</Text>
+  //     <Text style={styles.txtRecordCounter}>{data?.recordTime}</Text>
+  //     <View style={styles.viewRecorder}>
+  //       <View style={styles.recordBtnWrapper}>
+  //         <Button
+  //           style={styles.btn}
+  //           // onPress={'this.onStartRecord'}
+  //           textStyle={styles.txt}>
+  //           Record
+  //         </Button>
+  //         <Button
+  //           style={[
+  //             styles.btn,
+  //             {
+  //               marginLeft: 12,
+  //             },
+  //           ]}
+  //           // onPress={this.onPauseRecord}
+  //           textStyle={styles.txt}>
+  //           Pause
+  //         </Button>
+  //         <Button
+  //           style={[
+  //             styles.btn,
+  //             {
+  //               marginLeft: 12,
+  //             },
+  //           ]}
+  //           // onPress={this.onResumeRecord}
+  //           textStyle={styles.txt}>
+  //           Resume
+  //         </Button>
+  //         <Button
+  //           style={[styles.btn, {marginLeft: 12}]}
+  //           // onPress={this.onStopRecord}
+  //           textStyle={styles.txt}>
+  //           Stop
+  //         </Button>
+  //       </View>
+  //     </View>
+  //     <View style={styles.viewPlayer}>
+  //       <TouchableOpacity style={styles.viewBarWrapper}>
+  //         <View style={styles.viewBar}>
+  //           <View style={[styles.viewBarPlay, {width: 10}]} />
+  //         </View>
+  //       </TouchableOpacity>
+  //       <Text style={styles.txtCounter}>kkkk</Text>
+  //       <View style={styles.playBtnWrapper}>
+  //         <Button
+  //           style={styles.btn}
+  //           // onPress={this.onStartPlay}
+  //           textStyle={styles.txt}>
+  //           Play
+  //         </Button>
+  //         <Button
+  //           style={[
+  //             styles.btn,
+  //             {
+  //               marginLeft: 12,
+  //             },
+  //           ]}
+  //           // onPress={this.onPausePlay}
+  //           textStyle={styles.txt}>
+  //           Pause
+  //         </Button>
+  //         <Button
+  //           style={[
+  //             styles.btn,
+  //             {
+  //               marginLeft: 12,
+  //             },
+  //           ]}
+  //           // onPress={this.onResumePlay}
+  //           textStyle={styles.txt}>
+  //           Resume
+  //         </Button>
+  //         <Button
+  //           style={[
+  //             styles.btn,
+  //             {
+  //               marginLeft: 12,
+  //             },
+  //           ]}
+  //           // onPress={this.onStopPlay}
+  //           textStyle={styles.txt}>
+  //           Stop
+  //         </Button>
+  //       </View>
+  //     </View>
+  //   </SafeAreaView>
+  // );
+
+  return <AudioRecorder />;
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+const styles: any = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#455A64',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  titleTxt: {
+    marginTop: 100,
+    color: 'white',
+    fontSize: 28,
   },
-  sectionDescription: {
+  viewRecorder: {
+    marginTop: 40,
+    width: '100%',
+    alignItems: 'center',
+  },
+  recordBtnWrapper: {
+    flexDirection: 'row',
+  },
+  viewPlayer: {
+    marginTop: 60,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  viewBarWrapper: {
+    marginTop: 28,
+    marginHorizontal: 28,
+    alignSelf: 'stretch',
+  },
+  viewBar: {
+    backgroundColor: '#ccc',
+    height: 4,
+    alignSelf: 'stretch',
+  },
+  viewBarPlay: {
+    backgroundColor: 'white',
+    height: 4,
+    width: 0,
+  },
+  playStatusTxt: {
     marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+    color: '#ccc',
   },
-  highlight: {
-    fontWeight: '700',
+  playBtnWrapper: {
+    flexDirection: 'row',
+    marginTop: 40,
+  },
+  btn: {
+    borderColor: 'white',
+    borderWidth: 1,
+  },
+  txt: {
+    color: 'white',
+    fontSize: 14,
+    marginHorizontal: 8,
+    marginVertical: 4,
+  },
+  txtRecordCounter: {
+    marginTop: 32,
+    color: 'white',
+    fontSize: 20,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
+  },
+  txtCounter: {
+    marginTop: 12,
+    color: 'white',
+    fontSize: 20,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
   },
 });
 
