@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -10,21 +10,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-} from 'react-native';
+} from "react-native";
 import AudioRecorderPlayer, {
   RecordBackType,
-} from 'react-native-audio-recorder-player';
-import Button from './button';
+} from "react-native-audio-recorder-player";
+import Button from "../../components/form/button/button";
 
 const AudioRecorder = () => {
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const [isRecording, setIsRecording] = useState(false);
-  const [recordedUri, setRecordedUri] = useState('');
+  const [recordedUri, setRecordedUri] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [escustar, setEscustar] = useState<any>(null);
 
   const onStartRecord = async () => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       try {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
@@ -33,16 +33,16 @@ const AudioRecorder = () => {
         ]);
 
         if (
-          granted['android.permission.RECORD_AUDIO'] ===
+          granted["android.permission.RECORD_AUDIO"] ===
             PermissionsAndroid.RESULTS.GRANTED &&
-          granted['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+          granted["android.permission.WRITE_EXTERNAL_STORAGE"] ===
             PermissionsAndroid.RESULTS.GRANTED &&
-          granted['android.permission.READ_EXTERNAL_STORAGE'] ===
+          granted["android.permission.READ_EXTERNAL_STORAGE"] ===
             PermissionsAndroid.RESULTS.GRANTED
         ) {
-          console.log('Permissions granted');
+          console.log("Permissions granted");
         } else {
-          console.log('All required permissions not granted');
+          console.log("All required permissions not granted");
           return;
         }
       } catch (err) {
@@ -52,12 +52,12 @@ const AudioRecorder = () => {
     }
 
     const result = await audioRecorderPlayer.startRecorder();
-    audioRecorderPlayer.addRecordBackListener(e => {
+    audioRecorderPlayer.addRecordBackListener((e) => {
       setEscustar({
         recordSecs: e.currentPosition,
         recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
       });
-      console.log('GRAVANDO: ', e);
+      console.log("GRAVANDO: ", e);
       setIsRecording(true);
       console.log(result);
     });
@@ -72,7 +72,7 @@ const AudioRecorder = () => {
   };
 
   const onStopPlay = async () => {
-    console.log('onStopPlay');
+    console.log("onStopPlay");
     audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
     setIsPlaying(false);
@@ -82,7 +82,7 @@ const AudioRecorder = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.titleTxt}>Escutar Audio</Text>
       <Text style={styles.txtRecordCounter}>
-        {escustar?.recordTime !== null ? escustar?.recordTime : '00:00:00'}
+        {escustar?.recordTime !== null ? escustar?.recordTime : "00:00:00"}
       </Text>
       <View style={styles.viewRecorder}>
         <View style={styles.recordBtnWrapper}>
@@ -96,15 +96,17 @@ const AudioRecorder = () => {
                 marginLeft: 12,
               },
             ]}
-            onPress={() => Alert.alert('pause')}
-            textStyle={styles.txt}>
+            onPress={() => Alert.alert("pause")}
+            textStyle={styles.txt}
+          >
             Pause
           </Button>
 
           <Button
-            style={[styles.btn, {marginLeft: 12}]}
+            style={[styles.btn, { marginLeft: 12 }]}
             onPress={() => {}}
-            textStyle={styles.txt}>
+            textStyle={styles.txt}
+          >
             Stop
           </Button>
         </View>
@@ -113,19 +115,20 @@ const AudioRecorder = () => {
       <View style={styles.viewPlayer}>
         <TouchableOpacity style={styles.viewBarWrapper}>
           <View style={styles.viewBar}>
-            <View style={[styles.viewBarPlay, {width: 10}]} />
+            <View style={[styles.viewBarPlay, { width: 10 }]} />
           </View>
         </TouchableOpacity>
         <Text style={styles.titleTxt}>Gravar Audio</Text>
         <Text style={styles.txtCounter}>
-          {' '}
-          {escustar?.recordTime !== null ? escustar?.recordTime : '00:00:00'}
+          {" "}
+          {escustar?.recordTime !== null ? escustar?.recordTime : "00:00:00"}
         </Text>
         <View style={styles.playBtnWrapper}>
           <Button
             style={styles.btn}
             onPress={onStartRecord}
-            textStyle={styles.txt}>
+            textStyle={styles.txt}
+          >
             Play
           </Button>
           <Button
@@ -136,7 +139,8 @@ const AudioRecorder = () => {
               },
             ]}
             onPress={() => {}}
-            textStyle={styles.txt}>
+            textStyle={styles.txt}
+          >
             Pausar gravação
           </Button>
 
@@ -148,7 +152,8 @@ const AudioRecorder = () => {
               },
             ]}
             onPress={onStopRecord}
-            textStyle={styles.txt}>
+            textStyle={styles.txt}
+          >
             Parar gravação
           </Button>
         </View>
@@ -160,77 +165,77 @@ const AudioRecorder = () => {
 const styles: any = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#455A64',
-    flexDirection: 'column',
-    alignItems: 'center',
+    backgroundColor: "#455A64",
+    flexDirection: "column",
+    alignItems: "center",
   },
   titleTxt: {
     marginTop: 100,
-    color: 'white',
+    color: "white",
     fontSize: 28,
   },
   viewRecorder: {
     marginTop: 40,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   recordBtnWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   viewPlayer: {
     marginTop: 60,
-    alignSelf: 'stretch',
-    alignItems: 'center',
+    alignSelf: "stretch",
+    alignItems: "center",
   },
   viewBarWrapper: {
     marginTop: 28,
     marginHorizontal: 28,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   viewBar: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     height: 4,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   viewBarPlay: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     height: 4,
     width: 0,
   },
   playStatusTxt: {
     marginTop: 8,
-    color: '#ccc',
+    color: "#ccc",
   },
   playBtnWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 40,
   },
   btn: {
-    borderColor: 'white',
+    borderColor: "white",
     borderWidth: 1,
   },
   txt: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
     marginHorizontal: 8,
     marginVertical: 4,
   },
   txtRecordCounter: {
     marginTop: 32,
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    textAlignVertical: 'center',
-    fontWeight: '200',
-    fontFamily: 'Helvetica Neue',
+    textAlignVertical: "center",
+    fontWeight: "200",
+    fontFamily: "Helvetica Neue",
     letterSpacing: 3,
   },
   txtCounter: {
     marginTop: 12,
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    textAlignVertical: 'center',
-    fontWeight: '200',
-    fontFamily: 'Helvetica Neue',
+    textAlignVertical: "center",
+    fontWeight: "200",
+    fontFamily: "Helvetica Neue",
     letterSpacing: 3,
   },
 });

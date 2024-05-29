@@ -6,46 +6,46 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import type {ReactElement, ReactNode} from 'react';
+} from "react-native";
+import type { ReactElement, ReactNode } from "react";
 
-import {Component} from 'react';
+import { Component } from "react";
 
 // import NativeButton from 'apsl-react-native-button';
 
 const styles: any = StyleSheet.create({
   btn: {
-    backgroundColor: 'transparent',
-    alignSelf: 'center',
+    backgroundColor: "transparent",
+    alignSelf: "center",
     borderRadius: 4,
     borderWidth: 2,
     width: 320,
     height: 52,
-    borderColor: 'white',
+    borderColor: "white",
 
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   btnDisabled: {
-    backgroundColor: 'rgb(243,243,243)',
-    alignSelf: 'center',
+    backgroundColor: "rgb(243,243,243)",
+    alignSelf: "center",
     borderRadius: 4,
     borderWidth: 2,
     width: 320,
     height: 52,
-    borderColor: '#333',
+    borderColor: "#333",
 
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   txt: {
     fontSize: 14,
-    color: 'white',
+    color: "white",
   },
   imgLeft: {
     width: 24,
     height: 24,
-    position: 'absolute',
+    position: "absolute",
     left: 16,
   },
 });
@@ -71,7 +71,7 @@ class Button extends Component<ItemProps, any> {
     style: styles.btn,
     textStyle: styles.txt,
     imgLeftStyle: styles.imgLeft,
-    indicatorColor: 'white',
+    indicatorColor: "white",
     activeOpacity: 0.5,
   };
 
@@ -100,7 +100,8 @@ class Button extends Component<ItemProps, any> {
     return (
       <TouchableOpacity
         activeOpacity={this.props.activeOpacity}
-        onPress={this.props.onPress}>
+        onPress={this.props.onPress}
+      >
         <View style={this.props.style}>
           {this.props.imgLeftSrc ? (
             <Image
