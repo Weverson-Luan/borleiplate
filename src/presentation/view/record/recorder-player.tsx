@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
 import React, { useState, useRef } from "react";
 import {
   View,
@@ -15,30 +13,38 @@ import AudioRecorderPlayer, {
   RecordBackType,
 } from "react-native-audio-recorder-player";
 import Button from "../../components/form/button/button";
+import { Label } from "./styles";
 
 const AudioRecorder = () => {
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const [isRecording, setIsRecording] = useState(false);
   const [recordedUri, setRecordedUri] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [escustar, setEscustar] = useState<any>(null);
+  const [escustar, setEscustar] = useState<any>("00:00:00");
 
   const onStartRecord = async () => {
+    const atLeastAndroid13 =
+      Platform.OS === "android" && Platform.Version >= 33;
+
     if (Platform.OS === "android") {
       try {
         const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         ]);
 
         if (
-          granted["android.permission.RECORD_AUDIO"] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          granted["android.permission.WRITE_EXTERNAL_STORAGE"] ===
-            PermissionsAndroid.RESULTS.GRANTED &&
-          granted["android.permission.READ_EXTERNAL_STORAGE"] ===
-            PermissionsAndroid.RESULTS.GRANTED
+          atLeastAndroid13
+            ? granted["android.permission.RECORD_AUDIO"] ===
+              PermissionsAndroid.RESULTS.GRANTED
+            : granted["android.permission.WRITE_EXTERNAL_STORAGE"] ===
+                PermissionsAndroid.RESULTS.GRANTED &&
+              granted["android.permission.READ_EXTERNAL_STORAGE"] ===
+                PermissionsAndroid.RESULTS.GRANTED &&
+              granted["android.permission.RECORD_AUDIO"] ===
+                PermissionsAndroid.RESULTS.GRANTED
         ) {
           console.log("Permissions granted");
         } else {
@@ -68,25 +74,52 @@ const AudioRecorder = () => {
     audioRecorderPlayer.removeRecordBackListener();
     setRecordedUri(result);
     setIsRecording(false);
-    console.log(result);
+    console.log("Parar", result);
   };
 
+  /**
+   * Escutar um audio
+   */
+  const onStartPlay = async () => {
+    const result = await audioRecorderPlayer.startPlayer(recordedUri);
+    // const volume = await audioRecorderPlayer.setVolume(1.0);
+
+    audioRecorderPlayer.addPlayBackListener(async (e) => {
+      if (e.currentPosition === e.duration) {
+        onStopPlay();
+      }
+      console.log("Playing: ", e.currentPosition);
+    });
+
+    setIsRecording(true);
+    console.log("Playing started: ", result);
+  };
+
+  /**
+   * Parar a reprodução de audio
+   */
   const onStopPlay = async () => {
-    console.log("onStopPlay");
-    audioRecorderPlayer.stopPlayer();
+    const result = await audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
-    setIsPlaying(false);
+    setIsRecording(false);
+    console.log("PARA GRAVAÇÃO: ", result);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.titleTxt}>Escutar Audio</Text>
+      {/* <Text style={styles.titleTxt}>Escutar Audio</Text> */}
+      <Label>Escutar Audio</Label>
       <Text style={styles.txtRecordCounter}>
         {escustar?.recordTime !== null ? escustar?.recordTime : "00:00:00"}
       </Text>
+
       <View style={styles.viewRecorder}>
         <View style={styles.recordBtnWrapper}>
-          <Button style={styles.btn} onPress={() => {}} textStyle={styles.txt}>
+          <Button
+            style={styles.btn}
+            onPress={onStartPlay}
+            textStyle={styles.txt}
+          >
             Escutar
           </Button>
           <Button
@@ -96,7 +129,7 @@ const AudioRecorder = () => {
                 marginLeft: 12,
               },
             ]}
-            onPress={() => Alert.alert("pause")}
+            onPress={onStartPlay}
             textStyle={styles.txt}
           >
             Pause

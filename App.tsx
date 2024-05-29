@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 /**
- * Sample React Native App
+ * Sample React Native App 0.74.1
  * https://github.com/facebook/react-native
  *
  * @format
@@ -9,10 +7,18 @@
 
 import React from "react";
 
+import { ThemeProvider } from "styled-components";
+
+import theme from "./src/core/styles/styled-components/theme";
+
 import AudioRecorder from "./src/presentation/view/record/recorder-player";
 
-function App(): React.JSX.Element {
-  return <AudioRecorder />;
-}
+export const App: React.FunctionComponent = () => {
+  return (
+    <ThemeProvider theme={theme}>
+      <AudioRecorder />
+    </ThemeProvider>
+  );
+};
 
 export default App;

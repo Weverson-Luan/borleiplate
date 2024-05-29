@@ -10,9 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "18.2.0",
+    "@types/styled-components-react-native": "5.2.0",
+    "react": "^18.3.1",
     "react-native": "0.74.1",
-    "react-native-audio-recorder-player": "^3.6.7"
+    "react-native-audio-recorder-player": "^3.6.7",
+    "react-native-unistyles": "^2.7.2",
+    "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -23,6 +26,7 @@
     "@react-native/typescript-config": "0.74.83",
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
+    "@types/styled-components": "5.1.6",
     "babel-jest": "^29.6.3",
     "jest": "^29.6.3",
     "prettier": "2.8.8",

@@ -33,7 +33,7 @@ src
   src/presentation/
 
   1 - Contém tudo relacionado à apresentação da UI, incluindo rotas, views, view-models e componentes de UI.
-      * routes: Resposável por toda interação de navegação dentro do app. 
+      * routes: Responsável por toda interação de navegação dentro do app. 
       * views: Componentes de tela (páginas) que utilizam os viewmodels para obter dados.
       * view-models: Lógica de apresentação que interage com os modelos e atualiza as views.
       * components/: Componentes reutilizáveis de UI.
