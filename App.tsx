@@ -11,16 +11,18 @@ import { ThemeProvider } from "styled-components";
 
 import theme from "./src/core/styles/styled-components/theme";
 
-import AudioRecorder from "./src/presentation/view/record/recorder-player";
-import Bluetooh from "./src/presentation/view/bluethooh/bluetooh";
-import BluetoothClassicScanner from "./src/presentation/view/blueethoh-classic/blueethoh-classic";
+import { I18nextProvider } from "react-i18next";
+import i18next from "./src/core/config/i18n/index.config";
+
+import { AppRoutes } from "./src/presentation/routes";
 
 export const App: React.FunctionComponent = () => {
-  const deviceId = "6C:97:6D:C7:F0:DF";
   return (
-    <ThemeProvider theme={theme}>
-      <BluetoothClassicScanner />
-    </ThemeProvider>
+    <I18nextProvider i18n={i18next}>
+      <ThemeProvider theme={theme}>
+        <AppRoutes />
+      </ThemeProvider>
+    </I18nextProvider>
   );
 };
 

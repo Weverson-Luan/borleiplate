@@ -68,18 +68,21 @@ const requestPermissions = async () => {
   }
 };
 
-const App = () => {
+const BluettohBlePlx = () => {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [procurando, setProcurando] = useState(false);
   const [conectando, setConectando] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState<Device[] | any>([]);
 
-  const scanForPeripherals = () => {
+  const scanForPeripherals = async () => {
     setProcurando(true);
+    const isPermission = await requestPermissions();
+    console.log(isPermission);
+    // if (!isPermission) return;
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.log("primeir log", error);
+        console.log("primeiro log de error", error);
       }
       if (device && device.name) {
         setAllDevices((prevState: Device[]) => {
@@ -107,7 +110,7 @@ const App = () => {
 
       const device = await bleManager.connectToDevice(deviceId);
       await device.discoverAllServicesAndCharacteristics();
-      console.log("Connected to device:", device.name);
+      console.log("Conectado ao dispositivo:", device.name);
       if (device && device.name) {
         setConnectedDevice((prevState: Device[]) => {
           if (!isDuplicteDevice(prevState, device)) {
@@ -142,11 +145,21 @@ const App = () => {
         alignContent: "center",
         justifyContent: "center",
         padding: 24,
-        paddingTop: 60,
         paddingBottom: 60,
         backgroundColor: "#FFF",
       }}
     >
+      <Text
+        style={{
+          fontWeight: "700",
+          fontSize: 24,
+          marginBottom: 16,
+          color: "#000",
+        }}
+      >
+        MODULO BLUETTOH BLE PLX
+      </Text>
+
       <TouchableOpacity
         style={{
           width: "100%",
@@ -163,7 +176,7 @@ const App = () => {
           <ActivityIndicator size={24} color={"#fff"} />
         ) : (
           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
-            PROCURAR DISPO
+            PROCURAR DISPOSITIVOS
           </Text>
         )}
       </TouchableOpacity>
@@ -210,7 +223,7 @@ const App = () => {
           </TouchableOpacity>
         )}
         ListEmptyComponent={
-          <Text style={{ fontSize: 18, fontWeight: "600" }}>
+          <Text style={{ fontSize: 18, fontWeight: "600", color: "#010101" }}>
             NENHUM DISPOSITIVO ENCONTRADO...
           </Text>
         }
@@ -264,4 +277,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default BluettohBlePlx;

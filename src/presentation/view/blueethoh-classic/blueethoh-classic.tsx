@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   View,
   Text,
@@ -13,66 +14,103 @@ import {
 import BluetoothSerial, {
   BluetoothDevice,
 } from "react-native-bluetooth-classic";
+import DeviceInfo from "react-native-device-info";
 
+const requestPermissions = async () => {
+  if (Platform.OS === "android") {
+    const apiLevel = await DeviceInfo.getApiLevel();
+
+    if ((apiLevel ?? -1) < 31) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Location Permission",
+          message: "Bluetooth Low Energy requires Location",
+          buttonPositive: "OK",
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } else {
+      const grantedBluetoothScan = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+        {
+          title: "Bluetooth Scan Permission",
+          message: "Bluetooth Low Energy requires Bluetooth Scan permission",
+          buttonPositive: "OK",
+        }
+      );
+
+      const grantedBluetoothConnect = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+        {
+          title: "Bluetooth Connect Permission",
+          message: "Bluetooth Low Energy requires Bluetooth Connect permission",
+          buttonPositive: "OK",
+        }
+      );
+
+      const grantedAccessFineLocation = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Location Permission",
+          message: "Bluetooth Low Energy requires Location",
+          buttonPositive: "OK",
+        }
+      );
+
+      return (
+        grantedBluetoothScan === PermissionsAndroid.RESULTS.GRANTED &&
+        grantedBluetoothConnect === PermissionsAndroid.RESULTS.GRANTED &&
+        grantedAccessFineLocation === PermissionsAndroid.RESULTS.GRANTED
+      );
+    }
+  } else {
+    return true;
+  }
+};
 const BluetoothClassicScanner = () => {
   const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [connectedDevice, setConnectedDevice] =
     useState<BluetoothDevice | null>(null);
 
-  const requestPermissions = async () => {
-    if (Platform.OS === "android") {
-      try {
-        const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.BLUETOOTH,
-          PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADMIN,
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-          PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        ]);
-
-        const allGranted = Object.values(granted).every(
-          (permission) => permission === PermissionsAndroid.RESULTS.GRANTED
-        );
-
-        if (!allGranted) {
-          Alert.alert(
-            "Permission denied",
-            "You need to grant all permissions to use Bluetooth"
-          );
-          return false;
-        }
-        return true;
-      } catch (err) {
-        console.warn(err);
-        return false;
-      }
-    }
-    return true;
-  };
+  const [procurando, setProcurando] = useState(false);
+  const [conectando, setConectando] = useState(false);
+  const [validandoDipositivo, setValidandoDipositivo] = useState(false);
 
   const listPairedDevices = async () => {
     try {
-      const pairedDevices = await BluetoothSerial.getBondedDevices();
-      setDevices([]);
+      setValidandoDipositivo(true);
+      const pairedDevices = await BluetoothSerial.unpairDevice(
+        "78:37:16:5B:73:FA"
+      );
+      console.log("Bluetooth", pairedDevices);
+      setValidandoDipositivo(false);
     } catch (error) {
+      setValidandoDipositivo(false);
       console.error("Failed to list paired devices:", error);
     }
   };
 
   const discoverDevices = async () => {
     try {
+      setProcurando(true);
+      await requestPermissions();
       const unpairedDevices = await BluetoothSerial.startDiscovery();
       setDevices((prevDevices) => [...prevDevices, ...unpairedDevices]);
+      setProcurando(false);
     } catch (error) {
       console.error("Failed to discover devices:", error);
     }
   };
 
-  const connectToDevice = async (device: any) => {
+  const connectToDevice = async (device: BluetoothDevice) => {
     try {
-      console.log("name", device?.name);
-      const connected = await BluetoothSerial.connectToDevice(device.id);
+      console.log("name", device?.name, device.address);
+
+      const connected = await BluetoothSerial.connectToDevice(device.id, {
+        secureSocket: false,
+        readTimeout: 100000,
+      });
       if (connected) {
         setConnectedDevice(device);
       }
@@ -83,7 +121,9 @@ const BluetoothClassicScanner = () => {
 
   const getConnectedDevices = async () => {
     try {
+      setValidandoDipositivo(true);
       const connectedDevices = await BluetoothSerial.getConnectedDevices();
+      console.log("Connected devices", connectedDevices);
       if (connectedDevices.length > 0) {
         setConnectedDevice(connectedDevices[0]);
         Alert.alert(
@@ -92,65 +132,92 @@ const BluetoothClassicScanner = () => {
             connectedDevices[0].name || connectedDevices[0].id
           }`
         );
+        setValidandoDipositivo(false);
       }
+      setValidandoDipositivo(false);
     } catch (error) {
+      setValidandoDipositivo(false);
       console.error("Failed to get connected devices:", error);
     }
   };
 
-  // useEffect(() => {
-  //   BluetoothSerial.requestBluetoothEnabled().then((enabled) => {
-  //     if (enabled) {
-  //       listPairedDevices();
-  //     }
-  //   });
-  // }, []);
-
   return (
-    <View style={{ backgroundColor: "#fff", flex: 1, padding: 24 }}>
+    <View
+      style={{
+        backgroundColor: "#fff",
+        flex: 1,
+        padding: 24,
+        paddingBottom: 64,
+      }}
+    >
+      {/**PROCURAR DIPOSITIVO */}
       <TouchableOpacity
         style={{
           width: "100%",
-          borderRadius: 4,
+          borderRadius: 20,
           height: 40,
-          backgroundColor: "red",
+          backgroundColor: "#051C3B",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: 90,
-          marginBottom: 32,
+          marginBottom: 16,
         }}
         onPress={discoverDevices}
       >
-        {false ? (
+        {procurando ? (
           <ActivityIndicator size={24} color={"#fff"} />
         ) : (
           <Text style={{ fontWeight: "700", fontSize: 16, color: "#fff" }}>
-            PROCURAR NOVOS DISPO
+            PROCURAR NOVOS DISPOSITIVOS
           </Text>
         )}
       </TouchableOpacity>
 
+      {/**LIMPAR TODOS DISPOSITIVOS */}
       <TouchableOpacity
         style={{
           width: "100%",
-          borderRadius: 4,
+          borderRadius: 20,
           height: 40,
           backgroundColor: "red",
           alignItems: "center",
           justifyContent: "center",
 
-          marginBottom: 32,
+          marginBottom: 16,
         }}
-        onPress={getConnectedDevices}
+        onPress={() => setDevices([])}
       >
         {false ? (
           <ActivityIndicator size={24} color={"#fff"} />
         ) : (
           <Text style={{ fontWeight: "700", fontSize: 16, color: "#fff" }}>
-            VALIDAR DISPOSITIVOS
+            LIMPAR DISPOSITIVOS
           </Text>
         )}
       </TouchableOpacity>
+
+      {/**VALIDAR DIPOSITIVO CONECTADO */}
+      <TouchableOpacity
+        style={{
+          width: "100%",
+          borderRadius: 20,
+          height: 40,
+          backgroundColor: "#FC5701",
+          alignItems: "center",
+          justifyContent: "center",
+
+          marginBottom: 32,
+        }}
+        onPress={listPairedDevices}
+      >
+        {validandoDipositivo ? (
+          <ActivityIndicator size={24} color={"#fff"} />
+        ) : (
+          <Text style={{ fontWeight: "700", fontSize: 16, color: "#fff" }}>
+            VALIDAR DISPOSITIVOS CONECTADO
+          </Text>
+        )}
+      </TouchableOpacity>
+
       <FlatList
         data={devices}
         keyExtractor={(item: any) => item?.id}
@@ -187,7 +254,6 @@ const BluetoothClassicScanner = () => {
           </Text>
         }
       />
-      {connectedDevice && <Text>Connected to: {connectedDevice?.name}</Text>}
     </View>
   );
 };
