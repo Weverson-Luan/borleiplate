@@ -16,9 +16,9 @@ const Home = () => {
 
   return (
     <>
-      <View>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ fontSize: 34, fontWeight: "700", color: "green" }}>
-          Olá, Bem vinaod a Figuereido!
+          Olá, Bem vindo!
         </Text>
       </View>
     </>

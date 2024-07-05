@@ -10,12 +10,13 @@ import ScanDevicesScreen from "../../view/bluetooh-manager/bluetooh-manager";
 const Stack = createNativeStackNavigator();
 
 function AppRoutesStack() {
+  // 6C:97:6D:C7:F0:DF
   return (
     <Stack.Navigator initialRouteName="Blueetoh">
       <Stack.Screen
         name="Blueetoh"
         options={{ title: "Conectar Bluetooh" }}
-        component={ScanDevicesScreen}
+        component={BluetoothClassicScanner}
       />
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>

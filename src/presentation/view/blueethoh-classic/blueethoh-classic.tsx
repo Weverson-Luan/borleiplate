@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -15,6 +16,7 @@ import BluetoothSerial, {
   BluetoothDevice,
 } from "react-native-bluetooth-classic";
 import DeviceInfo from "react-native-device-info";
+import { useNavigation } from "@react-navigation/native";
 
 const requestPermissions = async () => {
   if (Platform.OS === "android") {
@@ -75,6 +77,7 @@ const requestPermissions = async () => {
  *  @returns https://github.com/kenjdavidson/react-native-bluetooth-classic
  */
 const BluetoothClassicScanner = () => {
+  const { navigate } = useNavigation();
   const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [connectedDevice, setConnectedDevice] =
     useState<BluetoothDevice | null>(null);
@@ -131,45 +134,47 @@ const BluetoothClassicScanner = () => {
 
   const connectToDevice = async (device: BluetoothDevice) => {
     try {
-      console.log("Disp. selecionado", device?.name, device.address);
+      console.log("Connecting to device", device.id);
 
-      const connected = await BluetoothSerial.connectToDevice(device.id, {
-        secureSocket: false,
-        readTimeout: 100000,
-      });
+      const truckAsync = await AsyncStorage.getItem("@trucks");
+      const truck = truckAsync !== null ? JSON.parse(truckAsync!) : null;
 
-      if (connected) {
-        console.log("conectado", connected.name);
-        setConnectedDevice(device);
+      if (device?.id === truck?.id) {
+        console.log("ta proximo?", true);
         setDevices([device]);
+
+        setTimeout(() => {
+          //@ts-ignore
+          navigate("Home");
+        }, 4000);
+        return;
       }
+      console.log("não ta proximo?", false);
+      Alert.alert("Dispositivo esta longe");
+      setDevices((preven) => preven);
     } catch (error) {
       console.error("Failed to connect:", error);
     }
   };
 
-  const getConnectedDevices = async () => {
-    try {
-      const connectedDevices = await BluetoothSerial.getConnectedDevices();
-      console.log("*", connectedDevices);
-      if (connectedDevices[0]?.id) {
-        console.log("Connected devices", connectedDevices);
-        const pairedDevices = await BluetoothSerial.pairDevice(
-          connectedDevices[0]?.address
-        );
-        console.log("Bluetooth CONECTADO", pairedDevices.available);
-        return;
-      }
+  const buscarAparelhoMotorista = async () => {
+    const truckAsync = await AsyncStorage.getItem("@trucks");
+    const truck = truckAsync !== null ? JSON.parse(truckAsync!) : null;
+
+    if (!truck) {
+      const data = {
+        name: "Volvo Truck",
+        id: "6C:97:6D:C7:F0:DF",
+        address: "6C:97:6D:C7:F0:DF",
+      };
+      await AsyncStorage.setItem("@trucks", JSON.stringify(data));
 
       return;
-    } catch (error) {
-      setValidandoDipositivo(false);
-      console.error("Failed to get connected devices:", error);
     }
   };
 
   useEffect(() => {
-    getConnectedDevices();
+    buscarAparelhoMotorista();
   }, []);
 
   return (
