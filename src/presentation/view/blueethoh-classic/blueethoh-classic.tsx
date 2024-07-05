@@ -68,35 +68,61 @@ const requestPermissions = async () => {
     return true;
   }
 };
+
+/**
+ * Focada em dispositivos Bluetooth Clássico (não BLE), permitindo comunicação com dispositivos como impressoras e fones de ouvido.
+ * Suporta conexão, leitura, escrita e escaneamento de dispositivos Bluetooth Clássico.
+ *  @returns https://github.com/kenjdavidson/react-native-bluetooth-classic
+ */
 const BluetoothClassicScanner = () => {
   const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [connectedDevice, setConnectedDevice] =
     useState<BluetoothDevice | null>(null);
 
   const [procurando, setProcurando] = useState(false);
-  const [conectando, setConectando] = useState(false);
   const [validandoDipositivo, setValidandoDipositivo] = useState(false);
 
-  const listPairedDevices = async () => {
+  const handleValidarDipositivoConectado = async () => {
     try {
+      console.log("selecionou", connectedDevice?.name);
+
       setValidandoDipositivo(true);
-      const pairedDevices = await BluetoothSerial.unpairDevice(
-        "78:37:16:5B:73:FA"
+      if (connectedDevice?.id) {
+        const pairedDevices = await BluetoothSerial.pairDevice(
+          connectedDevice?.address
+        );
+        console.log("Bluetooth CONECTADO", pairedDevices);
+        return;
+      }
+
+      Alert.alert(
+        "Selecione dispositivo",
+        `Procure dipositivos para se connectar`
       );
-      console.log("Bluetooth", pairedDevices);
-      setValidandoDipositivo(false);
     } catch (error) {
       setValidandoDipositivo(false);
       console.error("Failed to list paired devices:", error);
+    } finally {
+      setValidandoDipositivo(false);
     }
   };
 
   const discoverDevices = async () => {
     try {
       setProcurando(true);
-      await requestPermissions();
-      const unpairedDevices = await BluetoothSerial.startDiscovery();
-      setDevices((prevDevices) => [...prevDevices, ...unpairedDevices]);
+      const permission = await requestPermissions();
+      if (permission) {
+        const unpairedDevices = await BluetoothSerial.startDiscovery();
+
+        // Adiciona novos dispositivos à lista, evitando duplicados
+        setDevices((prevDevices) => {
+          const newDevices = unpairedDevices.filter(
+            (device) =>
+              !prevDevices.some((prevDevice) => prevDevice.id === device.id)
+          );
+          return [...prevDevices, ...newDevices];
+        });
+      }
       setProcurando(false);
     } catch (error) {
       console.error("Failed to discover devices:", error);
@@ -105,14 +131,17 @@ const BluetoothClassicScanner = () => {
 
   const connectToDevice = async (device: BluetoothDevice) => {
     try {
-      console.log("name", device?.name, device.address);
+      console.log("Disp. selecionado", device?.name, device.address);
 
       const connected = await BluetoothSerial.connectToDevice(device.id, {
         secureSocket: false,
         readTimeout: 100000,
       });
+
       if (connected) {
+        console.log("conectado", connected.name);
         setConnectedDevice(device);
+        setDevices([device]);
       }
     } catch (error) {
       console.error("Failed to connect:", error);
@@ -121,25 +150,27 @@ const BluetoothClassicScanner = () => {
 
   const getConnectedDevices = async () => {
     try {
-      setValidandoDipositivo(true);
       const connectedDevices = await BluetoothSerial.getConnectedDevices();
-      console.log("Connected devices", connectedDevices);
-      if (connectedDevices.length > 0) {
-        setConnectedDevice(connectedDevices[0]);
-        Alert.alert(
-          "Connected",
-          `Already connected to ${
-            connectedDevices[0].name || connectedDevices[0].id
-          }`
+      console.log("*", connectedDevices);
+      if (connectedDevices[0]?.id) {
+        console.log("Connected devices", connectedDevices);
+        const pairedDevices = await BluetoothSerial.pairDevice(
+          connectedDevices[0]?.address
         );
-        setValidandoDipositivo(false);
+        console.log("Bluetooth CONECTADO", pairedDevices.available);
+        return;
       }
-      setValidandoDipositivo(false);
+
+      return;
     } catch (error) {
       setValidandoDipositivo(false);
       console.error("Failed to get connected devices:", error);
     }
   };
+
+  useEffect(() => {
+    getConnectedDevices();
+  }, []);
 
   return (
     <View
@@ -207,7 +238,7 @@ const BluetoothClassicScanner = () => {
 
           marginBottom: 32,
         }}
-        onPress={listPairedDevices}
+        onPress={handleValidarDipositivoConectado}
       >
         {validandoDipositivo ? (
           <ActivityIndicator size={24} color={"#fff"} />
@@ -218,42 +249,70 @@ const BluetoothClassicScanner = () => {
         )}
       </TouchableOpacity>
 
-      <FlatList
-        data={devices}
-        keyExtractor={(item: any) => item?.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
+      {connectedDevice?.name ? (
+        <TouchableOpacity
+          style={{
+            width: "100%",
+            height: 60,
+            backgroundColor: "gray",
+            marginBottom: 8,
+            paddingTop: 8,
+            paddingLeft: 16,
+            borderRadius: 4,
+          }}
+          key={connectedDevice.id}
+          onPress={() => {}}
+        >
+          <Text
             style={{
-              width: "100%",
-              height: 60,
-              backgroundColor: "gray",
-              marginBottom: 8,
-              paddingTop: 8,
-              paddingLeft: 16,
-              borderRadius: 4,
+              marginBottom: 4,
+              color: "#fff",
+              fontWeight: "700",
+              fontSize: 16,
             }}
-            key={item.id}
-            onPress={() => connectToDevice(item)}
           >
-            <Text
-              style={{
-                marginBottom: 4,
-                color: "#fff",
-                fontWeight: "700",
-                fontSize: 16,
-              }}
-            >
-              DISPOSITIVO: {item.name ?? "Sem nome"}
-            </Text>
-            <Text>ID : {item.id}</Text>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={
-          <Text style={{ fontSize: 18, fontWeight: "600" }}>
-            NENHUM DISPOSITIVO ENCONTRADO...
+            DISPOSITIVO: {connectedDevice.name ?? "Sem nome"}
           </Text>
-        }
-      />
+          <Text>ID : {connectedDevice.id}</Text>
+        </TouchableOpacity>
+      ) : (
+        <FlatList
+          data={devices}
+          keyExtractor={(item: any) => item?.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={{
+                width: "100%",
+                height: 60,
+                backgroundColor: "gray",
+                marginBottom: 8,
+                paddingTop: 8,
+                paddingLeft: 16,
+                borderRadius: 4,
+              }}
+              key={item.id}
+              onPress={() => connectToDevice(item)}
+            >
+              <Text
+                style={{
+                  marginBottom: 4,
+                  color: "#fff",
+                  fontWeight: "700",
+                  fontSize: 16,
+                }}
+              >
+                DISPOSITIVO: {item.name ?? "Sem nome"}
+              </Text>
+              <Text>ID : {item.id}</Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <Text style={{ fontSize: 18, fontWeight: "600" }}>
+              NENHUM DISPOSITIVO ENCONTRADO...
+            </Text>
+          }
+        />
+      )}
     </View>
   );
 };

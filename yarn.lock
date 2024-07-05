@@ -3295,6 +3295,7 @@ __metadata:
     react-i18next: ^14.1.2
     react-native: 0.74.1
     react-native-audio-recorder-player: ^3.6.7
+    react-native-ble-manager: 11.5.3
     react-native-ble-plx: ^3.2.0
     react-native-bluetooth-classic: ^1.73.0-rc.9
     react-native-device-info: ^11.1.0
@@ -6837,6 +6838,15 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: f4f813d66672a8262e3fcf6756c59dd6f576605a53ce8f24fa057550a22eb26b082f2b7407aa98eef61d8287321a13db43344f206aea4bf7397d2c756986577c
+  languageName: node
+  linkType: hard
+
+"react-native-ble-manager@npm:11.5.3":
+  version: 11.5.3
+  resolution: "react-native-ble-manager@npm:11.5.3"
+  peerDependencies:
+    react-native: ">=0.60.0"
+  checksum: 1e69c4e19c19d1800dc4ac0656a254bc66b0fec7f0a93b710864054455331093e9851c7f46de48102837f945becf53fcfc4061dd106e629b7b23b0637eaf9fcb
   languageName: node
   linkType: hard
 

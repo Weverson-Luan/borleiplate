@@ -68,6 +68,12 @@ const requestPermissions = async () => {
   }
 };
 
+/**
+ *
+ *  Biblioteca popular para comunicação com dispositivos Bluetooth Low Energy (BLE).
+ *  Oferece uma API completa para escaneamento, conexão, leitura e escrita de características BLE.
+ *  Bem documentada e amplamente utilizada na comunidade.
+ */
 const BluettohBlePlx = () => {
   const [allDevices, setAllDevices] = useState<Device[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -110,7 +116,7 @@ const BluettohBlePlx = () => {
 
       const device = await bleManager.connectToDevice(deviceId);
       await device.discoverAllServicesAndCharacteristics();
-      console.log("Conectado ao dispositivo:", device.name);
+      console.error("Failed to connect:", device.name);
       if (device && device.name) {
         setConnectedDevice((prevState: Device[]) => {
           if (!isDuplicteDevice(prevState, device)) {
@@ -136,6 +142,11 @@ const BluettohBlePlx = () => {
       bleManager.cancelDeviceConnection(connectedDevice.id);
       setConnectedDevice(null);
     }
+  };
+
+  const handleIsConected = async () => {
+    const res = await bleManager.isDeviceConnected("41:AC:CE:02:66:72");
+    console.log("Conectado ao dispositivo:", res);
   };
 
   return (
@@ -167,8 +178,8 @@ const BluettohBlePlx = () => {
           backgroundColor: "blue",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 4,
-          marginBottom: 32,
+          borderRadius: 20,
+          marginBottom: 16,
         }}
         onPress={() => scanForPeripherals()}
       >
@@ -177,6 +188,27 @@ const BluettohBlePlx = () => {
         ) : (
           <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
             PROCURAR DISPOSITIVOS
+          </Text>
+        )}
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          width: "100%",
+          height: 40,
+          backgroundColor: "orange",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 20,
+          marginBottom: 32,
+        }}
+        onPress={() => handleIsConected()}
+      >
+        {false ? (
+          <ActivityIndicator size={24} color={"#fff"} />
+        ) : (
+          <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
+            VALIDAR CONEXAO
           </Text>
         )}
       </TouchableOpacity>
