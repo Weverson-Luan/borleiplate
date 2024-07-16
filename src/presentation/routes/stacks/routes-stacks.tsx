@@ -6,17 +6,18 @@ import BluetoothClassicScanner from "../../view/blueethoh-classic/blueethoh-clas
 import { Home } from "../../view/home/home";
 import BluettohBlePlx from "../../view/verify-bluetooh/step-one/bluethooh-ble-plx/bluetooh";
 import ScanDevicesScreen from "../../view/bluetooh-manager/bluetooh-manager";
+import { ReadingProgressIndicator } from "../../components/reading-progress-indicator/reading-progress-indicator";
 
 const Stack = createNativeStackNavigator();
 
 function AppRoutesStack() {
   // 6C:97:6D:C7:F0:DF
   return (
-    <Stack.Navigator initialRouteName="Blueetoh">
+    <Stack.Navigator initialRouteName="ReadingProgressIndicator">
       <Stack.Screen
-        name="Blueetoh"
-        options={{ title: "Conectar Bluetooh" }}
-        component={BluetoothClassicScanner}
+        name="ReadingProgressIndicator"
+        options={{ title: "Meu Blog @Ws" }}
+        component={ReadingProgressIndicator}
       />
       <Stack.Screen name="Home" component={Home} />
     </Stack.Navigator>
