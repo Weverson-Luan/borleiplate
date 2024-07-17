@@ -4,17 +4,18 @@
 
 import React, { useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { ArrowUp } from "phosphor-react-native";
 
-// styles
-import { styles } from "./styles";
 import Animated, {
   BounceIn,
-  FadeIn,
   FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+
+// styles
+import { styles } from "./styles";
 
 type IProps = {
   value: number;
@@ -47,7 +48,7 @@ const ProgressBar = ({ value, onMoveTop }: IProps) => {
           entering={BounceIn}
           exiting={FadeOut}
         >
-          <Text>UP</Text>
+          <ArrowUp size={24} color="#fff" />
         </TouchableOpacityAnimated>
       ) : (
         <Animated.View style={styles.progressConten}>
