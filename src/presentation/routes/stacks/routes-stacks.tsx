@@ -13,13 +13,19 @@ const Stack = createNativeStackNavigator();
 function AppRoutesStack() {
   // 6C:97:6D:C7:F0:DF
   return (
-    <Stack.Navigator initialRouteName="ReadingProgressIndicator">
+    <Stack.Navigator initialRouteName="Bluetooh">
       <Stack.Screen
         name="ReadingProgressIndicator"
         options={{ title: "Meu Blog @Ws" }}
         component={ReadingProgressIndicator}
       />
       <Stack.Screen name="Home" component={Home} />
+
+      <Stack.Screen
+        name="Bluetooh"
+        options={{ title: "Procurar bluetooh" }}
+        component={BluetoothClassicScanner}
+      />
     </Stack.Navigator>
   );
 }

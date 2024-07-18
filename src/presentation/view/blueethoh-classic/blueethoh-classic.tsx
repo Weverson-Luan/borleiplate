@@ -18,10 +18,42 @@ import BluetoothSerial, {
 import DeviceInfo from "react-native-device-info";
 import { useNavigation } from "@react-navigation/native";
 
+const requestAndroid31Permissions = async () => {
+  const bluetoothScanPermission = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    {
+      title: "Location Permission",
+      message: "Bluetooth Low Energy requires Location",
+      buttonPositive: "OK",
+    }
+  );
+  const bluetoothConnectPermission = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    {
+      title: "Location Permission",
+      message: "Bluetooth Low Energy requires Location",
+      buttonPositive: "OK",
+    }
+  );
+  const fineLocationPermission = await PermissionsAndroid.request(
+    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    {
+      title: "Location Permission",
+      message: "Bluetooth Low Energy requires Location",
+      buttonPositive: "OK",
+    }
+  );
+
+  return (
+    bluetoothScanPermission === "granted" &&
+    bluetoothConnectPermission === "granted" &&
+    fineLocationPermission === "granted"
+  );
+};
+
 const requestPermissions = async () => {
   if (Platform.OS === "android") {
     const apiLevel = await DeviceInfo.getApiLevel();
-
     if ((apiLevel ?? -1) < 31) {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -33,38 +65,9 @@ const requestPermissions = async () => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } else {
-      const grantedBluetoothScan = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-        {
-          title: "Bluetooth Scan Permission",
-          message: "Bluetooth Low Energy requires Bluetooth Scan permission",
-          buttonPositive: "OK",
-        }
-      );
+      const isAndroid31PermissionsGranted = await requestAndroid31Permissions();
 
-      const grantedBluetoothConnect = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        {
-          title: "Bluetooth Connect Permission",
-          message: "Bluetooth Low Energy requires Bluetooth Connect permission",
-          buttonPositive: "OK",
-        }
-      );
-
-      const grantedAccessFineLocation = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Location Permission",
-          message: "Bluetooth Low Energy requires Location",
-          buttonPositive: "OK",
-        }
-      );
-
-      return (
-        grantedBluetoothScan === PermissionsAndroid.RESULTS.GRANTED &&
-        grantedBluetoothConnect === PermissionsAndroid.RESULTS.GRANTED &&
-        grantedAccessFineLocation === PermissionsAndroid.RESULTS.GRANTED
-      );
+      return isAndroid31PermissionsGranted;
     }
   } else {
     return true;
@@ -78,6 +81,7 @@ const requestPermissions = async () => {
  */
 const BluetoothClassicScanner = () => {
   const { navigate } = useNavigation();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<BluetoothDevice[]>([]);
   const [connectedDevice, setConnectedDevice] =
     useState<BluetoothDevice | null>(null);
@@ -134,43 +138,33 @@ const BluetoothClassicScanner = () => {
 
   const connectToDevice = async (device: BluetoothDevice) => {
     try {
-      console.log("Connecting to device", device.id);
-
-      const truckAsync = await AsyncStorage.getItem("@trucks");
-      const truck = truckAsync !== null ? JSON.parse(truckAsync!) : null;
-
-      if (device?.id === truck?.id) {
-        console.log("ta proximo?", true);
-        setDevices([device]);
-
-        setTimeout(() => {
-          //@ts-ignore
-          navigate("Home");
-        }, 4000);
-        return;
+      setIsLoading(true);
+      console.log(device.id);
+      const deviceConnection = await BluetoothSerial.pairDevice(device.address);
+      if (deviceConnection.bonded) {
+        setConnectedDevice(deviceConnection);
+      } else {
+        setConnectedDevice(null);
       }
-      console.log("não ta proximo?", false);
-      Alert.alert("Dispositivo esta longe");
-      setDevices((preven) => preven);
-    } catch (error) {
-      console.error("Failed to connect:", error);
+      BluetoothSerial.cancelDiscovery();
+      setIsLoading(false);
+    } catch (e) {
+      console.log("FAILED TO CONNECT", e);
     }
   };
 
   const buscarAparelhoMotorista = async () => {
-    const truckAsync = await AsyncStorage.getItem("@trucks");
-    const truck = truckAsync !== null ? JSON.parse(truckAsync!) : null;
-
-    if (!truck) {
-      const data = {
-        name: "Volvo Truck",
-        id: "6C:97:6D:C7:F0:DF",
-        address: "6C:97:6D:C7:F0:DF",
-      };
-      await AsyncStorage.setItem("@trucks", JSON.stringify(data));
-
-      return;
-    }
+    // const truckAsync = await AsyncStorage.getItem("@trucks");
+    // const truck = truckAsync !== null ? JSON.parse(truckAsync!) : null;
+    // if (!truck) {
+    //   const data = {
+    //     name: "Volvo Truck",
+    //     id: "6C:97:6D:C7:F0:DF",
+    //     address: "6C:97:6D:C7:F0:DF",
+    //   };
+    //   await AsyncStorage.setItem("@trucks", JSON.stringify(data));
+    //   return;
+    // }
   };
 
   useEffect(() => {
@@ -209,7 +203,7 @@ const BluetoothClassicScanner = () => {
       </TouchableOpacity>
 
       {/**LIMPAR TODOS DISPOSITIVOS */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           width: "100%",
           borderRadius: 20,
@@ -229,10 +223,10 @@ const BluetoothClassicScanner = () => {
             LIMPAR DISPOSITIVOS
           </Text>
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/**VALIDAR DIPOSITIVO CONECTADO */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           width: "100%",
           borderRadius: 20,
@@ -252,7 +246,7 @@ const BluetoothClassicScanner = () => {
             VALIDAR DISPOSITIVOS CONECTADO
           </Text>
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {connectedDevice?.name ? (
         <TouchableOpacity
