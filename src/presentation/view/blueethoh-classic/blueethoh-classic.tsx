@@ -203,7 +203,7 @@ const BluetoothClassicScanner = () => {
       </TouchableOpacity>
 
       {/**LIMPAR TODOS DISPOSITIVOS */}
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={{
           width: "100%",
           borderRadius: 20,
@@ -223,7 +223,7 @@ const BluetoothClassicScanner = () => {
             LIMPAR DISPOSITIVOS
           </Text>
         )}
-      </TouchableOpacity> */}
+      </TouchableOpacity>
 
       {/**VALIDAR DIPOSITIVO CONECTADO */}
       {/* <TouchableOpacity
@@ -282,11 +282,10 @@ const BluetoothClassicScanner = () => {
             <TouchableOpacity
               style={{
                 width: "100%",
-                height: 60,
                 backgroundColor: "gray",
                 marginBottom: 8,
-                paddingTop: 8,
-                paddingLeft: 16,
+                padding: 8,
+
                 borderRadius: 4,
               }}
               key={item.id}
