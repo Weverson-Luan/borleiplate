@@ -40,14 +40,29 @@ jobs:
 
     - name: Set up Android SDK
       run: |
-        mkdir -p $ANDROID_HOME
-        cd $ANDROID_HOME
+        mkdir -p $HOME/Android/Sdk/cmdline-tools
+        cd $HOME/Android/Sdk/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
         unzip commandlinetools-linux-8512546_latest.zip
-        mv cmdline-tools latest
-        yes | latest/bin/sdkmanager --licenses
-        latest/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3"
+        mv cmdline-tools/* cmdline-tools/latest/
+        yes | cmdline-tools/latest/bin/sdkmanager --licenses
+        cmdline-tools/latest/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3"
 
     - name: Set environment variables
       run: |
-        echo "ANDROID_HOME=$HOME/Android/
+        echo "ANDROID_HOME=$HOME/Android/Sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+
+    - name: Set permissions for gradlew
+      run: chmod +x ./android/gradlew
+    
+    - name: Build Android App
+      run: |
+        cd android
+        ./gradlew assembleRelease --stacktrace # ou ./gradlew assembleDebug para debug
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release
+        path: android/app/build/ou
