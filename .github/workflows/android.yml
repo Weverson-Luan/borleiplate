@@ -44,6 +44,7 @@ jobs:
         cd $HOME/Android/Sdk/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
         unzip commandlinetools-linux-8512546_latest.zip
+        rm commandlinetools-linux-8512546_latest.zip
         mv cmdline-tools/* cmdline-tools/latest/
         yes | cmdline-tools/latest/bin/sdkmanager --licenses
         cmdline-tools/latest/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3"
@@ -65,4 +66,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: app-release
-        path: android/app/build/ou
+        path: android/app/build/outputs/apk/release/app-release.apk # ajuste se necessário
