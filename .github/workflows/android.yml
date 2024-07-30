@@ -13,58 +13,41 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Check out the code #  Faz o checkout do código do seu repositório.
+    - name: Check out the code
       uses: actions/checkout@v3
     
-    - name: Set up Node.js #  Configura a versão do Node.js necessária.
+    - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20.12.1' # ou a versão do Node.js que você usa
+        node-version: '14' # ou a versão do Node.js que você usa
     
-    - name: Install Yarn # Instala o Yarn globalmente.
+    - name: Install Yarn
       run: npm install -g yarn
     
     - name: Install dependencies
       run: yarn install
     
-    
-    - name: Cache Gradle # Usa caching para acelerar a construção do Gradle.
+    - name: Cache Gradle
       uses: actions/cache@v3
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-
+    
     - name: Install JDK
       run: sudo apt-get install -y openjdk-11-jdk
 
-    - name: Set up Android SDK # Configurando o ambiemte Java
+    - name: Set up Android SDK
       run: |
         mkdir -p $ANDROID_HOME
         cd $ANDROID_HOME
         wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
         unzip commandlinetools-linux-8512546_latest.zip
-        yes | sdkmanager --licenses
-        sdkmanager "platforms;android-30" "build-tools;30.0.3"
-        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+        mv cmdline-tools latest
+        yes | latest/bin/sdkmanager --licenses
+        latest/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3"
 
     - name: Set environment variables
       run: |
-        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        echo "PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools" >> $GITHUB_ENV
-
-
-    - name: Set permissions for gradlew
-      run: chmod +x ./android/gradlew
-    
-    - name: Build Android App # Executa o comando para construir o APK do Android. Dependendo do que você precisa, pode ajustar para assembleDebug ou assembleRelease.
-      run: |
-        cd android
-        ./gradlew assembleRelease # ou ./gradlew assembleDebug para debug
-    
-    - name: Upload APK # Faz o upload do APK gerado como um artefato do GitHub Actions.
-      uses: actions/upload-artifact@v3
-      with:
-        name: app-release
-        path: android/app/build/outputs/apk/release/app-release.apk # ajuste se necessário
+        echo "ANDROID_HOME=$HOME/Android/
