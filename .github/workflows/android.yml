@@ -34,6 +34,9 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    - name: Set permissions for gradlew
+      run: chmod +x ./android/gradlew
     
     - name: Build Android App # Executa o comando para construir o APK do Android. Dependendo do que você precisa, pode ajustar para assembleDebug ou assembleRelease.
       run: |
