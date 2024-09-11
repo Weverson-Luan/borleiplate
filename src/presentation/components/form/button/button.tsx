@@ -1,4 +1,5 @@
-/* eslint-disable prettier/prettier */
+import React from "react";
+import { Component } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -8,10 +9,6 @@ import {
   View,
 } from "react-native";
 import type { ReactElement, ReactNode } from "react";
-
-import { Component } from "react";
-
-// import NativeButton from 'apsl-react-native-button';
 
 const styles: any = StyleSheet.create({
   btn: {
