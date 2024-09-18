@@ -44,7 +44,7 @@ const GraphicsWithD3 = ({ data, color }: ILineChartProps) => {
 
   // conevrter para svg
   const svgLine = lineFn(data) ?? "";
-  console.log("*" + svgLine);
+
 
   return (
     <View

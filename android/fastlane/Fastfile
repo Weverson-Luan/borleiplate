@@ -1,0 +1,6 @@
+platform :android do
+  desc "Assemble Android build for internal distribution"
+  lane :build_internal do
+    gradle(task: "assembleRelease")
+  end
+end
