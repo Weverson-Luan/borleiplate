@@ -25,4 +25,4 @@ jobs:
       run: sudo gem install fastlane
 
     - name: Build Android app
-      run: fastlane android build_internal
+      run: bundle exec fastlane android build_internal
