@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build Android APK
 
 on:
   push:
@@ -26,3 +26,10 @@ jobs:
 
     - name: Build Android app
       run: fastlane android build_internal
+
+    # Opcional: adicionar um passo para armazenar ou distribuir o APK/AAB
+    - name: Upload APK/AAB artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: app-release-apk
+        path: android/app/build/outputs/apk/release/app-release.apk  # Ou o caminho para o AAB
