@@ -1,3 +1,0 @@
-lane :build do
-  gradle(task: "assembleRelease")
-end
