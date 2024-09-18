@@ -1,35 +1,35 @@
-name: Build Android APK
+name: Build APK
 
 on:
   push:
     branches:
-      - main
+      - main # ou a branch que você preferir
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install Ruby
+        run: |
+          sudo apt-get install ruby-dev
+          sudo gem install fastlane
 
-    - name: Install Fastlane
-      run: sudo gem install fastlane
+      - name: Build APK
+        run: |
+          cd android
+          fastlane build
 
-    - name: Build Android app
-      run: fastlane android build_internal
-
-    # Opcional: adicionar um passo para armazenar ou distribuir o APK/AAB
-    - name: Upload APK/AAB artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: app-release-apk
-        path: android/app/build/outputs/apk/release/app-release.apk  # Ou o caminho para o AAB
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-app-release
+          path: android/app/build/outputs/apk/release/app-release.apk
