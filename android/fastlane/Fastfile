@@ -1,6 +1,14 @@
 platform :android do
   desc "Assemble Android build for internal distribution"
   lane :build_internal do
-    gradle(task: "assembleRelease")
+    # Executa a tarefa de gerar o APK no modo release
+    gradle(
+      task: "assembleRelease",        # Tarefa para gerar o APK (use 'bundleRelease' para gerar AAB)
+      build_type: "Release"           # Assegura que está no modo Release
+    )
+
+    # Opcionalmente, você pode armazenar o APK gerado em algum local de distribuição interna
+    # O caminho do APK geralmente fica em android/app/build/outputs/apk/release
+    # Você pode copiar ou mover para outro lugar, se necessário
   end
 end
