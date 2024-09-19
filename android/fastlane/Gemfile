@@ -1,4 +1,4 @@
 source "https://rubygems.org"
 
-gem "fastlane"
+gem "fastlane" # Remova qualquer referência ao repositório Git
 gem "activesupport", "~> 6.1.7.5"

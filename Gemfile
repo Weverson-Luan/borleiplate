@@ -1,6 +1,7 @@
-source("https://rubygems.org")
+source 'https://rubygems.org'
 
-gem "danger", "~> 8" # Fixed on 8.x because 9.x uses Octokit 5.x which doesn't support Ruby 2.6, which is needed to run verify_docs lane in fastlane's main repo.
-gem "fastlane", git: "https://github.com/fastlane/fastlane"
-gem "rubocop", "0.49.1"
-gem "xcov" # Needed for testing sample code
+# You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
+ruby ">= 2.6.10"
+
+gem 'cocoapods', '~> 1.13'
+gem 'activesupport', '>= 6.1.7.3', '< 7.1.0'
