@@ -12,6 +12,13 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
       
+      # Instala Ruby e Bundler
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0  # Ou a versão do Ruby que você está usando
+          bundler-cache: true
+
       - name: Install Ruby dependencies
         run: bundle install
 
@@ -36,8 +43,8 @@ jobs:
         uses: actions/cache@v3
         id: cache-node-modules
         with:
-            path: node_modules
-            key: bun-${{ hashFiles('bun.lockb') }}
+          path: node_modules
+          key: bun-${{ hashFiles('bun.lockb') }}
 
       - name: Install node modules if cache not present 📦
         run: bun i --immutable
@@ -45,18 +52,19 @@ jobs:
       
       - name: Create Google Service Credentials file 🔑
         run: |
-            echo "$GOOGLE_SERVICES" > google-services.json.b64
-            base64 -d -i google-services.json.b64 > android/app/google-services.json
+          echo "$GOOGLE_SERVICES" > google-services.json.b64
+          base64 -d -i google-services.json.b64 > android/app/google-services.json
         env:
-              GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}  
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}  
+
       - name: Create Firebase Service Credentials file 🔑
         run: |
-            echo "$FIREBASE_CREDENTIALS" > firebase-credentials.json.b64
-            base64 -d -i firebase-credentials.json.b64 > android/fastlane/config/firebase-credentials.json
+          echo "$FIREBASE_CREDENTIALS" > firebase-credentials.json.b64
+          base64 -d -i firebase-credentials.json.b64 > android/fastlane/config/firebase-credentials.json
         env:
-              # Firebase credentials are stored in a base64 encoded format 
-              FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
-              FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          # Firebase credentials are stored in a base64 encoded format 
+          FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
       
       - name: Install Fastlane
         run: |
@@ -66,7 +74,9 @@ jobs:
       
       - name: Build and Upload to Firebase
         run: |
-          cd android/fastlane
+          cd android
+          ./gradlew assembleRelease # Faz o build do APK de release
+          cd fastlane
           if [ -f config/firebase-credentials.json ]; then
             echo "✅ Firebase service credentials file exists"
             cd config
@@ -78,7 +88,6 @@ jobs:
             exit 1
           fi
           bundle install
-          bundle exec fastlane distribute --verbose
+          bundle exec fastlane firebase_distribution --verbose
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          
