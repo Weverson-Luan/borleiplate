@@ -28,5 +28,4 @@ jobs:
       run: fastlane --version
 
     - name: Build and distribute APK via Firebase
-      run: |
-        fastlane distribute --non-interactive
+      run: fastlane distribute --non-interactive

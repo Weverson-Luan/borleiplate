@@ -1,5 +1,6 @@
 default_platform(:android)
 ENV['FASTLANE_SKIP_CONFIRMATIONS'] = 'true'
+
 platform :android do
   desc "Crie o APK e distribua via Firebase App Distribution"
   lane :distribute do
