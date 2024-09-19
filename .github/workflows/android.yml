@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
 
       # Instala Ruby e Bundler
-      - name: Set up Ruby 🚀 
+      - name: Set up Ruby 🚀
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.0
@@ -95,10 +95,13 @@ jobs:
           gem install fastlane
           fastlane --version
 
+      # Verificar se o arquivo gradlew tem permissões de execução
+      - name: Garantir Permissão para gradlew
+        run: chmod +x ./gradlew
+
       - name: Build and Upload to Firebase 🚀
         run: |
           cd android
-          chmod +x ./gradlew
           ./gradlew assembleRelease -Pandroid.injected.signing.store.file=android/app/my-upload-key.keystore \
             -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
             -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
