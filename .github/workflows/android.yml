@@ -64,7 +64,18 @@ jobs:
       - name: Create Keystore 🔑
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/my-upload-key.keystore
-          
+
+      # Verifica se o keystore foi criado corretamente
+      - name: Verificar Keystore
+        run: ls -la android/app/
+
+      # Verifica as variáveis de ambiente
+      - name: Verificar Variáveis de Ambiente
+        run: |
+          echo "Keystore Password: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
+          echo "Key Alias: ${{ secrets.ANDROID_KEY_ALIAS }}"
+          echo "Key Password: ${{ secrets.ANDROID_KEY_PASSWORD }}"
+
       # Configura credenciais do Firebase
       - name: Create Firebase Config Directory
         run: mkdir -p android/fastlane/config
