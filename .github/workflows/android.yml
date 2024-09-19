@@ -106,3 +106,8 @@ jobs:
           bundle exec fastlane firebase_distribution --verbose
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+
+      # Verifica a configuração do Gradle para assinaturas
+      - name: Verificar Configuração de Assinatura Gradle
+        run: |
+          ./gradlew signingReport
