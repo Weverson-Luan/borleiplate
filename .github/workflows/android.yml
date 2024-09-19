@@ -57,6 +57,10 @@ jobs:
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}  
 
+      # Criar diretório config para armazenar credenciais Firebase
+      - name: Create Firebase Config Directory
+        run: mkdir -p android/fastlane/config
+
       - name: Create Firebase Service Credentials file 🔑
         run: |
           echo "$FIREBASE_CREDENTIALS" > firebase-credentials.json.b64
