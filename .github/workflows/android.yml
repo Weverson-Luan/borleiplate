@@ -18,14 +18,16 @@ jobs:
       with:
         java-version: '11'
 
-    - name: Install Firebase CLI
-      run: npm install -g firebase-tools
-
-    - name: Install dependencies
+    - name: Install Ruby
       run: |
-        choco install ruby
-        gem install fastlane -NV
-        fastlane add_plugin firebase_app_distribution
+        curl -L https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.1.3-1/rubyinstaller-devkit-3.1.3-1-x64.exe --output rubyinstaller.exe
+        start /wait rubyinstaller.exe /silent
+
+    - name: Install Fastlane
+      run: gem install fastlane -NV
+
+    - name: Check Fastlane Installation
+      run: fastlane --version
 
     - name: Build and distribute APK via Firebase
       run: |
