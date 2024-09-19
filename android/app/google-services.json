@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125919459565",
+    "project_id": "borleiplate",
+    "storage_bucket": "borleiplate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125919459565:android:27071b69f0e8078f14b4e4",
+        "android_client_info": {
+          "package_name": "com.boilerplate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsykvDs-bhdVPleSO6yX62iQRSRYUIV1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
