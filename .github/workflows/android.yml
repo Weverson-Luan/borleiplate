@@ -11,7 +11,13 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
-      
+
+      # Configura JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
       # Instala Ruby e Bundler
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
