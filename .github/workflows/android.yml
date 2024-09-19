@@ -79,6 +79,7 @@ jobs:
       - name: Build and Upload to Firebase
         run: |
           cd android
+          chmod +x ./gradlew # Garante permissão de execução
           ./gradlew assembleRelease # Faz o build do APK de release
           cd fastlane
           if [ -f config/firebase-credentials.json ]; then
