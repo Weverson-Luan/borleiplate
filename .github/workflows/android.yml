@@ -28,7 +28,7 @@ jobs:
         gem uninstall simctl xcodeproj CFPropertyList -aIx || true
 
     - name: Install Ruby dependencies
-      run: bundle install
+      run: bundle install --without ios
 
     - name: Verify Fastlane installation
       run: bundle exec fastlane --version
