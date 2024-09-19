@@ -2,7 +2,7 @@
 
 ## O que é?
 
-**Boilerplate code** é um código padrão que serve como ponto de partida para o desenvolvimento de páginas web ou aplicativos moveis. Ele inclui elementos essenciais como a estrutura básica do documento, metadados, links para folhas de estilo CSS e scripts JavaScript, facilitando a criação rápida e consistente de websites.
+**Boilerplate code** é um código padrão que serve como ponto de partida para o desenvolvimento de páginas web ou aplicativos moveis. Ele inclui elementos essenciais como a estrutura básica do documento, metadados, links para folhas de estilo CSS e scripts JavaScript, facilitando a criação rápida e consistente de websites..
 
 ## Quais são os benefícios do código boilerplate?
 
