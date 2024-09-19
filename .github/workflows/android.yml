@@ -97,7 +97,7 @@ jobs:
 
       # Verificar se o arquivo gradlew tem permissões de execução
       - name: Garantir Permissão para gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x android/gradlew
 
       - name: Build and Upload to Firebase 🚀
         run: |
