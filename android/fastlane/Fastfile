@@ -1,0 +1,20 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Create a new build and generate APK for distribution"
+  lane :distribute do
+    gradle(task: "clean assembleRelease")
+    apk_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH] # Caminho do APK gerado
+
+    # Aqui você pode automatizar o envio do APK para um repositório, servidor próprio ou link de download
+    ## sh "scp #{apk_path} user@server:/path/to/apk/folder/" # Exemplo de envio para um servidor via SCP
+
+    # Também pode automatizar envio de e-mails ou notificações aos usuários que devem receber o APK
+    # sh "python send_email_notification.py"
+  end
+end

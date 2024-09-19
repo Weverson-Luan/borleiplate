@@ -1,35 +1,28 @@
-name: Build APK
+name: Build and Distribute APK
 
 on:
   push:
     branches:
-      - main # ou a branch que você preferir
+      - main # Altere para a branch que você utiliza para produção
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: "11"
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
 
-      - name: Install Ruby
-        run: |
-          sudo apt-get install ruby-dev
-          sudo gem install fastlane
+    - name: Install dependencies
+      run: |
+        choco install ruby
+        gem install fastlane -NV
 
-      - name: Build APK
-        run: |
-          cd android
-          fastlane build
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: my-app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
+    - name: Build and distribute APK
+      run: |
+        fastlane distribute
