@@ -12,11 +12,8 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
       
-      - name: Install Ruby 💎
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.2
-          bundler-cache: true
+      - name: Install Ruby dependencies
+        run: bundle install
 
       - name: Cache Ruby
         uses: actions/cache@v3
