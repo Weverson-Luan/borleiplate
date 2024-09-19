@@ -19,13 +19,19 @@ import { GraphicsWithD3 } from "./src/presentation/components/graphics-with-d3/g
 
 export const App: React.FunctionComponent = () => {
   const data = [500, 450, 700, 310, 270, 510, 340, 400];
+  const total = data
+    .reduce((a, b) => a + b, 0)
+    .toLocaleString("pt-BR", {
+      currency: "BRL",
+      style: "currency",
+    });
   return (
     <I18nextProvider i18n={i18next}>
       <ThemeProvider theme={theme}>
         <GraphicsWithD3
           data={data}
           color="#c5f04d"
-          title="R$ 500,00"
+          title={total}
           subTitle="Acumulado de Janeiro á Agosta de 2024"
         />
       </ThemeProvider>
