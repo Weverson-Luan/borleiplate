@@ -23,12 +23,14 @@ jobs:
         gem update --system
         gem install bundler
 
+    - name: Clear Bundler cache
+      run: |
+        rm -rf vendor/bundle
+        bundle install --clean
+
     - name: Remove unwanted gems
       run: |
         gem uninstall simctl xcodeproj CFPropertyList -aIx || true
-
-    - name: Clean up gems
-      run: bundle clean --force
 
     - name: Install Ruby dependencies
       run: bundle install
