@@ -26,8 +26,8 @@ jobs:
     - name: Install Ruby dependencies
       run: bundle install
 
-    - name: Force install activesupport gem
-      run: gem install activesupport -v 6.1.7.5
+    - name: Verify Fastlane installation
+      run: bundle exec fastlane --version
 
     - name: Build and distribute APK via Firebase
       run: bundle exec fastlane distribute
