@@ -1,7 +1,4 @@
 source "https://rubygems.org"
 
 gem "fastlane"
-gem "activesupport", "~> 6.1" # Adiciona a dependência do ActiveSupport
-
-plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
-eval_gemfile(plugins_path) if File.exist?(plugins_path)
+gem "activesupport", "~> 6.1"  # Certifique-se de que essa linha está presente
