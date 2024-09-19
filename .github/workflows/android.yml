@@ -22,7 +22,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0  # Ou a versão do Ruby que você está usando
+          ruby-version: 3.0
           bundler-cache: true
 
       - name: Install Ruby dependencies
@@ -55,15 +55,13 @@ jobs:
       - name: Install node modules if cache not present 📦
         run: bun i --immutable
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-      
-      - name: Create Google Service Credentials file 🔑
-        run: |
-          echo "$GOOGLE_SERVICES" > google-services.json.b64
-          base64 -d -i google-services.json.b64 > android/app/google-services.json
-        env:
-          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}  
 
-      # Criar diretório config para armazenar credenciais Firebase
+      # Decodifica e cria o arquivo de keystore
+      - name: Create Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/my-upload-key.keystore
+      
+      # Configura credenciais do Firebase
       - name: Create Firebase Config Directory
         run: mkdir -p android/fastlane/config
 
@@ -72,32 +70,23 @@ jobs:
           echo "$FIREBASE_CREDENTIALS" > firebase-credentials.json.b64
           base64 -d -i firebase-credentials.json.b64 > android/fastlane/config/firebase-credentials.json
         env:
-          # Firebase credentials are stored in a base64 encoded format 
           FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-      
+
       - name: Install Fastlane
         run: |
           cd android/fastlane
           gem install fastlane
           fastlane --version
-      
+
       - name: Build and Upload to Firebase
         run: |
           cd android
-          chmod +x ./gradlew # Garante permissão de execução
-          ./gradlew assembleRelease # Faz o build do APK de release
+          chmod +x ./gradlew
+          ./gradlew assembleRelease -Pandroid.injected.signing.store.file=./app/my-upload-key.keystore \
+            -Pandroid.injected.signing.store.password=${{ secrets.ANDROID_KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=${{ secrets.ANDROID_KEY_ALIAS }} \
+            -Pandroid.injected.signing.key.password=${{ secrets.ANDROID_KEY_PASSWORD }}
           cd fastlane
-          if [ -f config/firebase-credentials.json ]; then
-            echo "✅ Firebase service credentials file exists"
-            cd config
-            ls -la
-            cd ..
-          else
-            echo "🔴 Firebase service credentials file does not exist"
-            ls -la
-            exit 1
-          fi
           bundle install
           bundle exec fastlane firebase_distribution --verbose
         env:
