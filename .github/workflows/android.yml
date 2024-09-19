@@ -23,9 +23,6 @@ jobs:
         gem update --system
         gem install bundler
 
-    - name: Install Ruby dependencies
-      run: bundle install
-
     - name: Verify Fastlane installation
       run: bundle exec fastlane --version
 
