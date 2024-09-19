@@ -64,7 +64,7 @@ jobs:
       - name: Create Keystore 🔑
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > android/app/my-upload-key.keystore
-      
+          
       # Configura credenciais do Firebase
       - name: Create Firebase Config Directory
         run: mkdir -p android/fastlane/config
