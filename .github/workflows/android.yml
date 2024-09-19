@@ -3,7 +3,7 @@ name: Build and Distribute APK
 on:
   push:
     branches:
-      - main
+      - main # Ou a branch que você escolher
 
 jobs:
   build:
@@ -18,10 +18,14 @@ jobs:
       with:
         java-version: '11'
 
-    - name: Update RubyGems and Bundler
-      run: |
-        gem update --system
-        gem install bundler
+    - name: Install Ruby
+      run: choco install ruby
+
+    - name: Install Fastlane
+      run: gem install fastlane -NV
+
+    - name: Check Fastlane Installation
+      run: fastlane --version
 
     - name: Build and distribute APK via Firebase
       run: bundle exec fastlane distribute
