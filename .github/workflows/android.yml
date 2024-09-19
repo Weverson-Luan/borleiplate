@@ -25,8 +25,7 @@ jobs:
 
     - name: Clear Bundler cache
       run: |
-        rm -rf vendor/bundle
-        bundle install --clean
+        Remove-Item -Recurse -Force vendor/bundle
 
     - name: Remove unwanted gems
       run: |
