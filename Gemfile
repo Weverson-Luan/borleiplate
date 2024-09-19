@@ -1,8 +1,6 @@
-source 'https://rubygems.org'
+source("https://rubygems.org")
 
-# You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
-ruby ">= 2.6.10"
-
-# Cocoapods 1.15 introduced a bug which break the build. We will remove the upper
-# bound in the template on Cocoapods with next React Native release.
-gem 'activesupport', '>= 6.1.7.5', '< 7.1.0'
+gem "danger", "~> 8" # Fixed on 8.x because 9.x uses Octokit 5.x which doesn't support Ruby 2.6, which is needed to run verify_docs lane in fastlane's main repo.
+gem "fastlane", git: "https://github.com/fastlane/fastlane"
+gem "rubocop", "0.49.1"
+gem "xcov" # Needed for testing sample code
