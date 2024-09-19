@@ -1,37 +1,87 @@
-name: Build and Distribute APK
+name: Add to Firebase App Distribution
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: windows-latest
+  distribute:
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      
+      - name: Install Ruby 💎
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: '11'
+      - name: Cache Ruby
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
-    - name: Update RubyGems and Bundler
-      run: |
-        gem update --system
-        gem install bundler
+      - name: Setup Bun Runtime 🍞
+        uses: antongolub/action-setup-bun@v1
+        with:
+          bun-version: latest
+          bun-repo: 'Jarred-Sumner/bun-releases-for-updater'
+          bun-config: '{"install": {"production": false}}'
+          cache: true
+          cache-bin: true
+          
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+            path: node_modules
+            key: bun-${{ hashFiles('bun.lockb') }}
 
-    - name: Remove unwanted gems
-      run: |
-        gem uninstall simctl xcodeproj CFPropertyList -aIx || true
-
-    - name: Install Ruby dependencies
-      run: bundle install --without ios
-
-    - name: Verify Fastlane installation
-      run: bundle exec fastlane --version
-
-    - name: Build and distribute APK via Firebase
-      run: bundle exec fastlane distribute
+      - name: Install node modules if cache not present 📦
+        run: bun i --immutable
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      
+      - name: Create Google Service Credentials file 🔑
+        run: |
+            echo "$GOOGLE_SERVICES" > google-services.json.b64
+            base64 -d -i google-services.json.b64 > android/app/google-services.json
+        env:
+              GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}  
+      - name: Create Firebase Service Credentials file 🔑
+        run: |
+            echo "$FIREBASE_CREDENTIALS" > firebase-credentials.json.b64
+            base64 -d -i firebase-credentials.json.b64 > android/fastlane/config/firebase-credentials.json
+        env:
+              # Firebase credentials are stored in a base64 encoded format 
+              FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}
+              FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      
+      - name: Install Fastlane
+        run: |
+          cd android/fastlane
+          gem install fastlane
+          fastlane --version
+      
+      - name: Build and Upload to Firebase
+        run: |
+          cd android/fastlane
+          if [ -f config/firebase-credentials.json ]; then
+            echo "✅ Firebase service credentials file exists"
+            cd config
+            ls -la
+            cd ..
+          else
+            echo "🔴 Firebase service credentials file does not exist"
+            ls -la
+            exit 1
+          fi
+          bundle install
+          bundle exec fastlane distribute --verbose
+        env:
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          
