@@ -3,7 +3,7 @@
  */
 import React from "react";
 
-import "../../../core/styles/unistyles";
+import "../../../app/styles/unistyles";
 
 import { View, Text, Pressable } from "react-native";
 

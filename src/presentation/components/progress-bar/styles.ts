@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import theme from "../../../core/styles/styled-components/theme";
+import theme from "../../../app/styles/styled-components/theme";
 
 /**
  * IMPORTS
