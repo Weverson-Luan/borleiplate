@@ -91,10 +91,10 @@ android {
         }
 
           release {
-            storeFile file('android/app/my-upload-key.keystore')
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+           storeFile file('my-upload-key.keystore')
+        storePassword project.hasProperty("ANDROID_KEYSTORE_PASSWORD") ? ANDROID_KEYSTORE_PASSWORD : ""
+        keyAlias project.hasProperty("ANDROID_KEY_ALIAS") ? ANDROID_KEY_ALIAS : ""
+        keyPassword project.hasProperty("ANDROID_KEY_PASSWORD") ? ANDROID_KEY_PASSWORD : ""
             
         }
     }

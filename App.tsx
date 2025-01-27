@@ -17,6 +17,7 @@ import i18next from "./src/app/config/i18n/index.config";
 import { AppRoutes } from "./src/presentation/routes";
 
 import { GeneratingQrcode } from "./src/presentation/view/generating-qrcode/generating-qrcode";
+import { Login } from "./src/presentation/view/login/login";
 
 export const App: React.FunctionComponent = () => {
   const data = [500, 450, 700, 310, 270, 510, 340, 400];
@@ -29,7 +30,7 @@ export const App: React.FunctionComponent = () => {
   return (
     <I18nextProvider i18n={i18next}>
       <ThemeProvider theme={theme}>
-        <GeneratingQrcode />
+        <AppRoutes />
       </ThemeProvider>
     </I18nextProvider>
   );
