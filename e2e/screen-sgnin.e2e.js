@@ -12,21 +12,28 @@ describe("Tela de login", () => {
   });
 
   it("Deve ser possivel encontrar o texto (Faça seu login)", async () => {
-    const texto = await element(by.text("Faça seu login"));
+    const texto = element(by.text("Faça seu login"));
 
     await expect(texto).toBeVisible();
   });
 
-  // it("Deve ser possivel usuário interagir com os input para realizar login", async () => {
-  //   // await element(by.id("username-input")).typeText("admin@example.com");
-  //   // await element(by.id("password-input")).typeText("123456");
-  //   // await element(by.id("button")).tap();
-  //   const inputUsername = await element(by.id("username-input"));
-  //   // const inputPassword = await element(by.id("password-input"));
-  //   // const button = await element(by.id("button"));
+  it("Deve ser possivel usuário interagir com os input para realizar login", async () => {
+    // 1 -> Informar o campo e-mail
+  const inputUsername = element(by.id("email-input"));
+  await inputUsername.tap(); // Foco no campo
+  await inputUsername.typeText("admin@example.com");
 
-  //   await inputUsername.typeText("admin@example.com");
-  //   // await inputPassword.typeText("123456");
+  // 2 -> Informar o campo senha
+  const inputPassword = element(by.id("password-input"));
+  await inputPassword.tap(); // Foco no campo
+  await inputPassword.typeText("123456");
+
+  // 3 -> Clicar no botão de login
+  await waitFor(element(by.id("button-login")))
+  .toBeVisible()
+  .whileElement(by.id("scroll-view")) // ID do seu ScrollView, caso exista
+  .scroll(50, "down");
+
   
-  // });
+  });
 });

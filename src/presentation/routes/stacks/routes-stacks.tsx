@@ -17,12 +17,14 @@ function AppRoutesStack() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Login" component={Login} />
+
+      <Stack.Screen name="Home" component={Home} />
+
       <Stack.Screen
         name="ReadingProgressIndicator"
         options={{ title: "Meu Blog @Ws" }}
         component={ReadingProgressIndicator}
       />
-      <Stack.Screen name="Home" component={Home} />
 
       <Stack.Screen
         name="Bluetooh"

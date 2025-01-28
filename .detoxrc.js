@@ -35,7 +35,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_4_API_28'
+        avdName: 'Pixel_4_API_30'
       }
     }
   },

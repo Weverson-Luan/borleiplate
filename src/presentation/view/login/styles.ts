@@ -5,7 +5,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+
+    backgroundColor: "#fff",
   },
   logo: {
     width: 100, // Largura da logo
@@ -20,5 +21,6 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 10,
     marginBottom: 15,
+    color: "#000",
   },
 });
