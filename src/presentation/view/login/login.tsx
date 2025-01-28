@@ -29,6 +29,7 @@ const Login = () => {
 
       {/* Campo de Usuário */}
       <TextInput
+        testID="username-input"
         style={styles.input}
         placeholder="Usuário"
         placeholderTextColor={"gray"}
@@ -38,6 +39,7 @@ const Login = () => {
 
       {/* Campo de Senha */}
       <TextInput
+        testID="password-input"
         style={styles.input}
         placeholder="Senha"
         placeholderTextColor={"gray"}
@@ -47,7 +49,7 @@ const Login = () => {
       />
 
       {/* Botão de Login */}
-      <Button title="Entrar" onPress={handleLogin} />
+      <Button testID="button" title="Entrar" onPress={handleLogin} />
     </View>
   );
 };

@@ -3,7 +3,7 @@ module.exports = {
   rootDir: '..',
   preset: 'react-native',
   testEnvironment: './node_modules/detox/runners/jest/testEnvironment.js',
-  testMatch: ['**/e2e/**/*'], // Certifique-se de que está correto
+  testRegex: '\\.e2e\\.js$', // Certifique-se de que os arquivos de teste terminem com .e2e.js
   testTimeout: 120000,
   maxWorkers: 1,
   globalSetup: 'detox/runners/jest/globalSetup',

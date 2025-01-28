@@ -1,13 +1,8 @@
 # Comandos
 
-## Para um emulador no modo release
+## Para gear build para o E2E realizar o teste
 
 ````
- detox test -c android.emu.release
-````
-
-## Para um dispositivo físico no modo release
-
-````
-detox test -c android.att.release
+ 1 -> LINUX : detox build --configuration android.emu.debug
+ 2 -> WINDOWS : detox build --configuration android.emu.debug | detox test --configuration android.emu.debug
 ````

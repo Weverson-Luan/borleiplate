@@ -13,8 +13,8 @@ module.exports = {
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'android/app/build/outputs/apk/release/app-release.apk', // Aponta para o APK principal do app.o
-      build: 'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release',
-      testBinaryPath: 'android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk', // Aponta para o APK de teste.
+      build: 'cd android && gradlew.bat assembleRelease assembleAndroidTest -DtestBuildType=release',
+      testBinaryPath: 'android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk', // Aponta para o APK de teste.
       reversePorts: [
         8081
       ]
@@ -35,7 +35,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_4_API_30'
+        avdName: 'Pixel_4_API_28'
       }
     }
   },
