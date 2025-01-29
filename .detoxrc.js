@@ -35,19 +35,11 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_4_API_28'
+        avdName: 'Pixel_4_API_30'
       }
     }
   },
   configurations: {
-    'ios.sim.debug': {
-      device: 'simulator',
-      app: 'ios.debug'
-    },
-    'ios.sim.release': {
-      device: 'simulator',
-      app: 'ios.release'
-    },
     'android.att.debug': {
       device: 'attached',
       app: 'android.debug'

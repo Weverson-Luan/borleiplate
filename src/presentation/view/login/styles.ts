@@ -11,12 +11,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-<<<<<<< HEAD
     paddingHorizontal: 20,
-=======
-
-    backgroundColor: "#fff",
->>>>>>> eaca6c0b204290122e1c4a02d21ce69e7e2d5ade
   },
   logo: {
     width: 100,
@@ -35,9 +30,9 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-<<<<<<< HEAD
     paddingHorizontal: 10,
     marginBottom: 10,
+    color: "#1e1e1e",
   },
   button: {
     width: "100%",
@@ -52,10 +47,5 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-=======
-    paddingLeft: 10,
-    marginBottom: 15,
-    color: "#000",
->>>>>>> eaca6c0b204290122e1c4a02d21ce69e7e2d5ade
   },
 });
