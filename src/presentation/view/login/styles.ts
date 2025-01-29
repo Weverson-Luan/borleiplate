@@ -2,23 +2,49 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    // justifyContent: "center",
+    // alignItems: "center",
+    // backgroundColor: "#fff",
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 20,
   },
   logo: {
-    width: 100, // Largura da logo
-    height: 100, // Altura da logo
-    marginBottom: 30, // Espaço entre a logo e os campos
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "blue",
+    marginBottom: 20,
   },
   input: {
     width: "100%",
-    height: 40,
-    borderColor: "#ccc",
+    height: 50,
     borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 8,
-    paddingLeft: 10,
-    marginBottom: 15,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
