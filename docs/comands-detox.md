@@ -1,5 +1,12 @@
 # Comandos
 
+## Listar devices (emuladores)
+
+````
+ 1 -> emulator -list-avds
+ 2 -> adb devices 
+````
+
 ## Para gear build para o E2E realizar o teste
 
 ````
